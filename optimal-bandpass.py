@@ -117,6 +117,7 @@ for k in range(M):
 Hd = np.prod(hd, axis=0)
 plt.plot(f, abs_db(Hd), 'k', label='Cascaded filter')
 plt.legend(loc='upper left')
+plt.savefig('01_initial_h.svg')
 
 plt.figure(2)
 plt.title("Initial filter - poles and zeros")
@@ -129,6 +130,8 @@ for k in range(M):
     zeros, poles, gain = signal.tf2zpk(b[k], a[k])
     plt.plot(np.real(poles), np.imag(poles), 'x', color=section_colors[k])
     plt.plot(np.real(zeros), np.imag(zeros), 'o', color='none', markeredgecolor=section_colors[k], alpha=0.5)
+
+plt.savefig('02_initial_zp.svg')
 
 # Optimizing filter
 
@@ -214,6 +217,8 @@ magnH_d = np.abs(Hd)
 plt.plot(f, abs_db(Hd), 'k', label='Cascaded filter')
 plt.legend(loc='upper left')
 
+plt.savefig('03_optimized_h.svg')
+
 plt.figure(4)
 plt.title("Optimized digital filter - Poles and Zeros")
 plt.axis([-3, 3, -2.25, 2.25])
@@ -226,5 +231,6 @@ for k in range(M):
     plt.plot(np.real(poles), np.imag(poles), 'x', color=section_colors[k])
     plt.plot(np.real(zeros), np.imag(zeros), 'o', color='none', markeredgecolor=section_colors[k], alpha=0.5)
 
+plt.savefig('04_optimized_zp.svg')
 plt.show()
 
