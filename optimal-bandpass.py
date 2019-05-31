@@ -145,7 +145,7 @@ for i in range(N):
     if (f[i] <= f_u):
         weight[i] = 1.0
 
-with tf.device('/gpu:0'):
+with tf.device('/cpu:0'):
     tWeight = tf.constant(weight, dtype=tf.float32)
     tZ = tf.placeholder(tf.complex64, [1, N])
 
@@ -178,9 +178,10 @@ tH = tf.reduce_prod(tB / tA, axis=0)
 iterations = 2000
 learning_rate = 0.0005
 
-# Cost function
-cost = tf.reduce_mean(tWeight * tf.squared_difference(tf.abs(tH), tH_a))
-optimizer = tf.train.AdamOptimizer(learning_rate).minimize(cost)
+# Loss function
+loss = tf.reduce_mean(tWeight * tf.squared_difference(tf.abs(tH), tH_a))
+optimizer = tf.train.AdamOptimizer(learning_rate)
+updates = optimizer.minimize(loss)
 
 zz = np.reshape(z, [1, N])
 
@@ -188,9 +189,9 @@ with tf.Session(config=tf.ConfigProto(allow_soft_placement=True, log_device_plac
     sess.run(tf.global_variables_initializer())
 
     for i in range(iterations):
-        loss, j = sess.run([optimizer, cost], feed_dict={tZ: zz})
+        loss_val, _ = sess.run([loss, updates], feed_dict={tZ: zz})
         if (i % 100 == 0):
-            print("  Cost: ", j)
+            print("  Loss: ", loss_val)
 
     b, a = sess.run([tb, ta])
 
